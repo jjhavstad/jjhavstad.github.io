@@ -10,7 +10,9 @@
     // Give an indicator that service workers are supported.
     status.textContent = 'supported';
 
-    navigator.serviceWorker.register('service-worker.js');
+    navigator.serviceWorker.register('service-worker.js').then((registration) => {
+      registration.active.postMessage("Hello!");
+    });
 
     // Listen for any messages from the service worker.
     navigator.serviceWorker.addEventListener('message', function(event) {
