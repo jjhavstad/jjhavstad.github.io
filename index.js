@@ -10,9 +10,7 @@
     // Give an indicator that service workers are supported.
     status.textContent = 'supported';
 
-    navigator.serviceWorker.register('service-worker.js').then((registration) => {
-      registration.active.postMessage("Hello!");
-    });
+    navigator.serviceWorker.register('service-worker.js');
 
     // Listen for any messages from the service worker.
     navigator.serviceWorker.addEventListener('message', function(event) {
@@ -31,17 +29,15 @@
       node.textContent = 'Client ' + clientId + ' says: ' + event.data.message;
     });
 
-    navigator.serviceWorker.controller.postMessage("Hello!");
-
-    // message.addEventListener('input', function() {
-    //   // There isn't always a service worker to send a message to. This can happen
-    //   // when the page is force reloaded.
-    //   if (!navigator.serviceWorker.controller) {
-    //     status.textContent = 'error: no controller';
-    //     return;
-    //   }
-    //   // Send the message to the service worker.
-    //   navigator.serviceWorker.controller.postMessage(message.value);
-    // });
+    message.addEventListener('input', function() {
+      // There isn't always a service worker to send a message to. This can happen
+      // when the page is force reloaded.
+      if (!navigator.serviceWorker.controller) {
+        status.textContent = 'error: no controller';
+        return;
+      }
+      // Send the message to the service worker.
+      navigator.serviceWorker.controller.postMessage(message.value);
+    });
   }
 })();
