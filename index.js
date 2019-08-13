@@ -29,15 +29,17 @@
       node.textContent = 'Client ' + clientId + ' says: ' + event.data.message;
     });
 
-    message.addEventListener('input', function() {
-      // There isn't always a service worker to send a message to. This can happen
-      // when the page is force reloaded.
-      if (!navigator.serviceWorker.controller) {
-        status.textContent = 'error: no controller';
-        return;
-      }
-      // Send the message to the service worker.
-      navigator.serviceWorker.controller.postMessage(message.value);
-    });
+    navigator.serviceWorker.controller.postMessage("Hello!");
+
+    // message.addEventListener('input', function() {
+    //   // There isn't always a service worker to send a message to. This can happen
+    //   // when the page is force reloaded.
+    //   if (!navigator.serviceWorker.controller) {
+    //     status.textContent = 'error: no controller';
+    //     return;
+    //   }
+    //   // Send the message to the service worker.
+    //   navigator.serviceWorker.controller.postMessage(message.value);
+    // });
   }
 })();
