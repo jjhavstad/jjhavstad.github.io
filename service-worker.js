@@ -21,9 +21,23 @@ self.addEventListener('message', function(event) {
   // If event.waitUntil is defined, use it to extend the
   // lifetime of the Service Worker.
   if (event.waitUntil) {
-    event.waitUntil(promise);
+    event.waitUntil(new Promise(checkCondition));
   }
 });
+
+var checkCondition = function(resolve, reject) {
+    setTimeout(checkCondition, interval, resolve, reject);
+    clientList.forEach(function(client) {
+      // Skip sending the message to the client that sent it.
+      // if (client.id === senderID) {
+      //   return;
+      // }
+      client.postMessage({
+        client: senderID,
+        message: event.data
+      });
+    });
+};
 
 self.addEventListener('install', function(event) {
   console.log("Installing...")
