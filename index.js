@@ -39,5 +39,7 @@
       // Send the message to the service worker.
       navigator.serviceWorker.controller.postMessage(message.value);
     });
+
+    message.dispatchEvent(new KeyboardEvent('keypress',{'key':'robot typed this'}));
   }
 })();
