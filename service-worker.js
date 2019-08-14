@@ -26,7 +26,7 @@ self.addEventListener('message', function(event) {
 });
 
 var checkCondition = function(resolve, reject) {
-    setTimeout(checkCondition, interval, resolve, reject);
+    setTimeout(checkCondition, 1000, resolve, reject);
     clientList.forEach(function(client) {
       // Skip sending the message to the client that sent it.
       // if (client.id === senderID) {
