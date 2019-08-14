@@ -27,14 +27,20 @@ self.addEventListener('message', function(event) {
 
 var checkCondition = function(resolve, reject) {
     setTimeout(checkCondition, 1000, resolve, reject);
-    clientList.forEach(function(client) {
-      // Skip sending the message to the client that sent it.
-      // if (client.id === senderID) {
-      //   return;
-      // }
-      client.postMessage({
-        client: senderID,
-        message: event.data
+    self.clients.matchAll()
+    .then(function(clientList) {
+      // event.source.id contains the ID of the sender of the message.
+      var senderID = event.source.id;
+
+      clientList.forEach(function(client) {
+        // Skip sending the message to the client that sent it.
+        // if (client.id === senderID) {
+        //   return;
+        // }
+        client.postMessage({
+          client: senderID,
+          message: event.data
+        });
       });
     });
 };
