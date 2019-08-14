@@ -40,6 +40,6 @@
       navigator.serviceWorker.controller.postMessage(message.value);
     });
 
-    message.dispatchEvent(new KeyboardEvent('keypress',{'key':'robot typed this'}));
+    message.dispatchEvent(new InputEvent('keypress',{'key':'robot typed this'}));
   }
 })();
