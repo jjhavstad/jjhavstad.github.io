@@ -26,7 +26,7 @@
       }
       // Show the message.
       node = inbox[clientId];
-      node.textContent = 'Client ' + clientId + ' says: ' + event.data.message;
+      node.textContent += 'Client ' + clientId + ' says: ' + event.data.message + '\n';
     });
 
     message.addEventListener('input', function() {
