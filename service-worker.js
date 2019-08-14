@@ -8,9 +8,9 @@ self.addEventListener('message', function(event) {
 
     clientList.forEach(function(client) {
       // Skip sending the message to the client that sent it.
-      if (client.id === senderID) {
-        return;
-      }
+      // if (client.id === senderID) {
+      //   return;
+      // }
       client.postMessage({
         client: senderID,
         message: event.data
