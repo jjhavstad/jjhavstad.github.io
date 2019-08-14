@@ -19,7 +19,6 @@ self.addEventListener('message', function(event) {
   });
 
   var checkCondition = function(resolve, reject) {
-      setTimeout(checkCondition, 1000, resolve, reject);
       self.clients.matchAll()
       .then(function(clientList) {
         // event.source.id contains the ID of the sender of the message.
@@ -36,6 +35,7 @@ self.addEventListener('message', function(event) {
           });
         });
       });
+      setTimeout(checkCondition, 1000, resolve, reject);
   };
 
   // If event.waitUntil is defined, use it to extend the
