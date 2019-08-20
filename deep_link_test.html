@@ -19,6 +19,14 @@
 <script>
   function venmoHandler() {
     console.log("venmo-handler clicked!");
+    $.ajax({
+      type: "GET",
+      url: "http://testmerchant.herokuapp.com/getec",
+      dataType: "json",
+      success: function(data, textStatus) {
+          window.location.href = "https://venmo.com?orderId=" + data.token1;
+    }
+});
     window.location.href = "https://venmo.com/orderId?=12345"
   }
 </script>
