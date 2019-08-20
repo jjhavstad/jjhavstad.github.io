@@ -30,7 +30,7 @@
       dataType: "json",
       success: function(data, textStatus) {
           console.log("Success");
-          window.location.href = "https://venmo.com?orderId=" + data.token1;
+          window.location.href = "venmo://venmo.com?orderId=" + data.token1;
       },
       error: function(e) {
         console.log(`Error: ${e}`);
