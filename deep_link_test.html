@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Deep Link Tests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: monospace;
+      font-size: 1rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<iframe>
+  <button id="venmo-handler" onclick="venmoHandler()">Venmo</button>
+</iframe>
+
+<script>
+  function venmoHandler() {
+    console.log("venmo-handler clicked!");
+    window.location.href = "https://venmo.com/orderId?=12345"
+  }
+
+  var button = document.getElementById("venmo-handler");
+  button.addEventListener("click", function(e) {
+    console.log("venmo-handler clicked!");
+    button.
+  });
+</script>
+
+</body>
+</html>
