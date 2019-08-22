@@ -26,25 +26,39 @@
         requestOrderId();
     });
 
-    var socket = new WebSocket("wss://jhavapp1.herokuapp.com/submit");
+    var sendSocket = new WebSocket("wss://jhavapp1.herokuapp.com/submit");
+    var recvSocket = new WebSocket("wss://jhavapp1.herokuapp.com/receive");
+    let uuid = "ABCDE";
 
-    socket.onmessage = function(event) {
+    sendSocket.onclose = function(event) {
+      console.log('[close] Connection died');
+    };
+
+    sendSocket.onerror = function(error) {
+      console.log(`[error] ${error.message}`);
+    };
+
+    recvSocket.onmessage = function(event) {
       console.log(`Received: ${event.data}`);
       parseInput(event.data);
     };
 
-    socket.onclose = function(event) {
+    recvSocket.onClose = function(event) {
       console.log('[close] Connection died');
     };
 
-    socket.onerror = function(error) {
+    recvSocket.onError = function(error) {
       console.log(`[error] ${error.message}`);
+    };
+
+    recvSocket.onopen = function() {
+      recvSocket.send(JSON.stringify({register:uuid}));
     };
 
     function sendOrderId(orderId) {
         document.getElementById("venmo-pay-status").innerHTML = "Waiting...";
-        let data = {uuid: "ABCDE", handle: "orderIdWithAddress", text: orderId};
-        socket.send(JSON.stringify(data));
+        let data = {uuid: uuid, handle: "orderIdWithAddress", text: orderId};
+        sendSocket.send(JSON.stringify(data));
     };
 
     function parseInput(input) {
