@@ -34,10 +34,12 @@
 
     sendSocket.onclose = function(event) {
       console.log('[close] Connection died');
+      document.getElementById("venmo-pay-status").innerHTML = '[close] Connection died';
     };
 
     sendSocket.onerror = function(error) {
       console.log(`[error] ${error.message}`);
+      document.getElementById("venmo-pay-status").innerHTML = `[error] ${error.message}`;
     };
 
     recvSocket.onmessage = function(event) {
