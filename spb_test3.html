@@ -12,7 +12,7 @@
 
 <h2>21 Mr. Merch</h2>
 
-<button id="venmo-pay" class="button js-button" role="button">venmo</button>
+<a id="venmo-pay" class="button js-button" role="button">venmo</a>
 
 <p id="venmo-pay-status">Ready</p>
 
@@ -22,14 +22,19 @@
   crossorigin="anonymous"></script>
 
 <script>
-    document.getElementById('venmo-pay').addEventListener("click", function(e) {
-        window.location.href = "venmo://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=" + uuid;
-        requestOrderId();
-    });
-
     var sendSocket = new WebSocket("wss://jhavapp1.herokuapp.com/submit");
     var recvSocket = new WebSocket("wss://jhavapp1.herokuapp.com/receive");
     let uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+    document.getElementById('venmo-pay').href = "venmo://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=" + uuid;
+
+    document.getElementById('venmo-pay').addEventListener("click", function(e) {
+        requestOrderId();
+    });
+
+    document.getElementById('venmo-pay').addEventListener("click", function(e) {
+        requestOrderId();
+    });
 
     sendSocket.onclose = function(event) {
       console.log('[close] Connection died');
