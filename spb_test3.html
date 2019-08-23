@@ -78,6 +78,7 @@
         type: "GET",
         url: "https://jjhavstad.github.io/order_tokens",
         dataType: "json",
+        async: false,
         success: function(data, textStatus) {
             console.log("Success");
             console.log(`Sending: ${data.token1}`);
