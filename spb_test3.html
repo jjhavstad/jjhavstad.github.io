@@ -12,7 +12,7 @@
 
 <h2>21 Mr. Merch</h2>
 
-<button id="venmo-pay" class="button js-button" role="button">venmo</a>
+<button id="venmo-pay" class="button js-button" role="button">venmo</button>
 
 <p id="venmo-pay-status">Ready</p>
 
@@ -23,7 +23,7 @@
 
 <script>
     document.getElementById('venmo-pay').addEventListener("click", function(e) {
-        window.location.href = "venmo://venmo.com?orderId=" + "\&uuid=" + uuid;
+        window.location.href = "venmo://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=" + uuid;
         requestOrderId();
     });
 
