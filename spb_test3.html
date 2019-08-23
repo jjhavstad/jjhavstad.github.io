@@ -32,6 +32,7 @@
 
     sendSocket.onclose = function(event) {
       console.log('[close] Connection died');
+      document.getElementById("venmo-pay-status").innerHTML = `Closed socket event message: ${event.data}`;
     };
 
     sendSocket.onerror = function(error) {
