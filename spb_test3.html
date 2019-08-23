@@ -32,10 +32,6 @@
         requestOrderId();
     });
 
-    document.getElementById('venmo-pay').addEventListener("click", function(e) {
-        requestOrderId();
-    });
-
     sendSocket.onclose = function(event) {
       console.log('[close] Connection died');
     };
