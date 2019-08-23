@@ -28,11 +28,10 @@
 
     var sendSocket = new WebSocket("wss://jhavapp1.herokuapp.com/submit");
     var recvSocket = new WebSocket("wss://jhavapp1.herokuapp.com/receive");
-    let uuid = "ABCDE";
+    let uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
     sendSocket.onclose = function(event) {
       console.log('[close] Connection died');
-      document.getElementById("venmo-pay-status").innerHTML = `Closed socket event message: ${event.data}`;
     };
 
     sendSocket.onerror = function(error) {
