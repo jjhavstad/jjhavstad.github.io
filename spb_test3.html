@@ -64,6 +64,7 @@
     function parseInput(input) {
         let result = JSON.parse(input);
         if (result.type == "orderCompleteMessage") {
+          recvSocket.send(JSON.stringify({unregister:uuid}));
           let value = result.value;
           document.getElementById("venmo-pay-status").innerHTML = "Finished with order: " + value.orderId;
         }
