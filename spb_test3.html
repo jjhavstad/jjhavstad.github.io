@@ -24,12 +24,12 @@
 
   <script>
     var OrderState = {
-      INITATED: 1,
-      WAITING_FOR_BUYER_APPRVOAL: 2,
-      COMPLETE: 3
+      INITIATED: 1,
+      WAITING: 2,
+      COMPLETED: 3
     };
 
-    var orderState = OrderState.INITATED;
+    var orderState = OrderState.INITIATED;
 
     let uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
@@ -90,11 +90,11 @@
 
     function parseInput(input) {
         let result = JSON.parse(input);
-        if (result.type == "orderCompleteMessage") {
+        if (result.type == "orderCOMPLETEDMessage") {
           recvSocket.send(JSON.stringify({unregister:uuid}));
           let value = result.value;
           document.getElementById("venmo-pay-status").innerHTML = "Finished with order: " + value.orderId;
-          orderState = OrderState.COMPLETE;
+          orderState = OrderState.COMPLETED;
         }
     };
 
@@ -108,7 +108,7 @@
             console.log("Success");
             console.log(`Sending: ${data.token1}`);
             sendOrderId(data.token1);
-            orderState = OrderState.WAITING_FOR_BUYER_APPROVAL;
+            orderState = OrderState.WAITING;
         },
         error: function(e) {
           console.log(`Error: ${e}`);
@@ -138,7 +138,7 @@
         document.getElementById('page-visibility').innerHTML = 'Document is hidden';
       } else {
         document.getElementById('page-visibility').innerHTML = 'Document is visible';
-        if (orderState === OrderState.WAITING_FOR_BUYER_APPROVAL) {
+        if (orderState != OrderState.COMPLETED) {
           document.getElementById('venmo-pay-status').innHTML = "Reopening web sockets to retrieve order status.";
           recvSocket = createRecvSocket();
           sendSocket = createSendSocket();
