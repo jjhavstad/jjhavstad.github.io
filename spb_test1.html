@@ -2,21 +2,24 @@
 <!DOCTYPE html>
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
-    <link rel="stylesheet" href="checkout.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+  <script src="socket_event.js"></script>
+  <script src="order_status.js"></script>
+  <script src="visibility_status.js"></script>
+  <link rel="stylesheet" href="checkout.css">
 </head>
 
 <body>
 
-<h2>21 Mr. Merch</h2>
+  <h2>21 Mr. Merch</h2>
 
-<a id="venmo-pay" class="button js-button" role="button" href="https://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=ABCDE">venmo</a>
+  <a id="venmo-pay" class="button js-button" role="button" href="https://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=ABCDE">venmo</a>
 
-<p id="venmo-pay-status">Ready</p>
+  <p id="venmo-pay-status">Ready</p>
 
-<script>
+  <script>
     var startTime = 0;
     document.getElementById('venmo-pay').addEventListener("click", function(e) {
         requestOrderId();
@@ -75,16 +78,33 @@
 
     function sendOrderId(orderId) {
         document.getElementById("venmo-pay-status").innerHTML = "Waiting...";
-        let data = {uuid: "ABCDE", type: "orderIdWithAddress", value: {orderId: orderId}}
+        let data = {uuid: "ABCDE", type: SocketEvent.ORDER_ID, value: {orderId: orderId}}
         socket.send(JSON.stringify(data));
     }
 
     function parseInput(input) {
         let result = JSON.parse(input);
-        if (result.type == "orderCompleteMessage") {
+        if (result.type == SocketEvent.ORDER_COMPLETE) {
           let value = result.value;
           document.getElementById("venmo-pay-status").innerHTML = "Finished with order: " + value.orderId;
         }
     }
-    </script>
+
+    if (typeof document.addEventListener != "undefined" || hidden != undefined) {
+      document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    }
+
+    function handleVisibilityChange() {
+      if (document[hidden]) {
+        document.getElementById('page-visibility').innerHTML = 'Document is hidden';
+      } else {
+        document.getElementById('page-visibility').innerHTML = 'Document is visible';
+        if (orderState != OrderState.COMPLETED) {
+          document.getElementById('venmo-pay-status').innHTML = "Reopening web sockets to retrieve order status.";
+          recvSocket = createRecvSocket();
+          sendSocket = createSendSocket();
+        }
+      }
+    };
+  </script>
 </body>
