@@ -9,58 +9,78 @@
 </head>
 
 <body>
+  <h2>21 Mr. Merch</h2>
 
-<h2>21 Mr. Merch</h2>
+  <a id="venmo-pay" class="button js-button" role="button">venmo</a>
 
-<a id="venmo-pay" class="button js-button" role="button">venmo</a>
+  <p id="venmo-pay-status">Ready</p>
 
-<p id="venmo-pay-status">Ready</p>
+  <p id="page-visibility">Document is visible</p>
 
-<p id="page-visibility"></p>
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
 
-<script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
+  <script>
+    var OrderState = {
+      INITATED: 1,
+      WAITING-FOR-BUYER-APPRVOAL: 2,
+      COMPLETE: 3
+    };
 
-<script>
-    var sendSocket = new WebSocket("wss://jhavapp1.herokuapp.com/submit");
-    var recvSocket = new WebSocket("wss://jhavapp1.herokuapp.com/receive");
+    var orderState = OrderState.INITATED;
+
     let uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+    function createRecvSocket() {
+      var recvSocket = new WebSocket("wss://jhavapp1.herokuapp.com/receive");
+
+      recvSocket.onmessage = function(event) {
+        console.log(`Received: ${event.data}`);
+        document.getElementById("venmo-pay-status").innerHTML = `Received event message: ${event.data}`;
+        parseInput(event.data);
+      };
+
+      recvSocket.onClose = function(event) {
+        console.log('[close] Connection died');
+      };
+
+      recvSocket.onError = function(error) {
+        console.log(`[error] ${error.message}`);
+      };
+
+      recvSocket.onopen = function() {
+        recvSocket.send(JSON.stringify({register:uuid}));
+      };
+
+      return recvSocket;
+    }
+
+    function createSendSocket() {
+      var sendSocket = new WebSocket("wss://jhavapp1.herokuapp.com/submit");
+
+      sendSocket.onclose = function(event) {
+        console.log('[close] Connection died');
+        document.getElementById("venmo-pay-status").innerHTML = '[close] Connection died';
+      };
+
+      sendSocket.onerror = function(error) {
+        console.log(`[error] ${error.message}`);
+        document.getElementById("venmo-pay-status").innerHTML = `[error] ${error.message}`;
+      };
+
+      return sendSocket;
+    }
+
+    var recvSocket = createRecvSocket();
+    var sendSocket = createSendSocket();
 
     document.getElementById('venmo-pay').href = "venmo://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=" + uuid;
 
     document.getElementById('venmo-pay').addEventListener("click", function(e) {
         requestOrderId();
     });
-
-    sendSocket.onclose = function(event) {
-      console.log('[close] Connection died');
-      document.getElementById("venmo-pay-status").innerHTML = '[close] Connection died';
-    };
-
-    sendSocket.onerror = function(error) {
-      console.log(`[error] ${error.message}`);
-      document.getElementById("venmo-pay-status").innerHTML = `[error] ${error.message}`;
-    };
-
-    recvSocket.onmessage = function(event) {
-      console.log(`Received: ${event.data}`);
-      document.getElementById("venmo-pay-status").innerHTML = `Received event message: ${event.data}`;
-      parseInput(event.data);
-    };
-
-    recvSocket.onClose = function(event) {
-      console.log('[close] Connection died');
-    };
-
-    recvSocket.onError = function(error) {
-      console.log(`[error] ${error.message}`);
-    };
-
-    recvSocket.onopen = function() {
-      recvSocket.send(JSON.stringify({register:uuid}));
-    };
 
     function sendOrderId(orderId) {
         document.getElementById("venmo-pay-status").innerHTML = "Waiting...";
@@ -74,6 +94,7 @@
           recvSocket.send(JSON.stringify({unregister:uuid}));
           let value = result.value;
           document.getElementById("venmo-pay-status").innerHTML = "Finished with order: " + value.orderId;
+          orderState = OrderState.COMPLETE;
         }
     };
 
@@ -87,6 +108,7 @@
             console.log("Success");
             console.log(`Sending: ${data.token1}`);
             sendOrderId(data.token1);
+            orderState = OrderState.WAITING-FOR-BUYER-APPRVOAL;
         },
         error: function(e) {
           console.log(`Error: ${e}`);
@@ -116,8 +138,11 @@
         document.getElementById('page-visibility').innerHTML = 'Document is hidden';
       } else {
         document.getElementById('page-visibility').innerHTML = 'Document is visible';
+        if (orderState === OrderState.WAITING-FOR-BUYER-APPRVOAL) {
+          recvSocket = createRecvSocket();
+          sendSocket = createSendSocket();
+        }
       }
-    }
-
-    </script>
+    };
+  </script>
 </body>
