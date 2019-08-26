@@ -92,13 +92,13 @@
 
     function sendOrderId(orderId) {
         document.getElementById("venmo-pay-status").innerHTML = "Waiting...";
-        let data = {uuid: uuid, type: ORDER_ID, value: {orderId: orderId}}
+        let data = {uuid: uuid, type: SocketEvent.ORDER_ID, value: {orderId: orderId}}
         sendSocket.send(JSON.stringify(data));
     };
 
     function parseInput(input) {
         let result = JSON.parse(input);
-        if (result.type == ORDER_COMPLETE) {
+        if (result.type == SocketEvent.ORDER_COMPLETE) {
           recvSocket.send(JSON.stringify({unregister:uuid}));
           let value = result.value;
           document.getElementById("venmo-pay-status").innerHTML = "Finished with order: " + value.orderId;
