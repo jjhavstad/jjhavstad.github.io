@@ -139,6 +139,7 @@
       } else {
         document.getElementById('page-visibility').innerHTML = 'Document is visible';
         if (orderState === OrderState.WAITING-FOR-BUYER-APPRVOAL) {
+          document.getElementById('venmo-pay-status').innHTML = "Reopening web sockets to retrieve order status.";
           recvSocket = createRecvSocket();
           sendSocket = createSendSocket();
         }
