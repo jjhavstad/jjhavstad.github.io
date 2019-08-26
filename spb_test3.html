@@ -108,7 +108,7 @@
     }
 
     if (typeof document.addEventListener != "undefined" || hidden != undefined) {
-
+      document.addEventListener(visibilityChange, handleVisibilityChange, false);
     }
 
     function handleVisibilityChange() {
