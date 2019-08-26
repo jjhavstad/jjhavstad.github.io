@@ -1,0 +1,7 @@
+var SocketEvent = {
+  ORDER_ID: 0,
+  ORDER_COMPLETE: 1,
+  ADDRESS_CHANGED: 2,
+  NEW_TOTAL: 3,
+  UNDEFINED: 4
+};
