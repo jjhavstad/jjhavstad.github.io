@@ -2,10 +2,13 @@
 <!DOCTYPE html>
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
-    <link rel="stylesheet" href="checkout.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+  <script src="socket_event.js"></script>
+  <script src="order_status.js"></script>
+  <script src="visibility_status.js"></script>
+  <link rel="stylesheet" href="checkout.css">
 </head>
 
 <body>
@@ -23,20 +26,6 @@
     crossorigin="anonymous"></script>
 
   <script>
-    var SocketEvent = {
-      ORDER_ID: 0,
-      ORDER_COMPLETE: 1,
-      ADDRESS_CHANGED: 2,
-      NEW_TOTAL: 3,
-      UNDEFINED: 4
-    };
-
-    var OrderState = {
-      INITIATED: 1,
-      WAITING: 2,
-      COMPLETED: 3
-    };
-
     var orderState = OrderState.INITIATED;
 
     let uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -123,19 +112,6 @@
         }
       });
     };
-
-    // Set the name of the hidden property and the change event for visibility
-    var hidden, visibilityChange;
-    if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
-      hidden = "hidden";
-      visibilityChange = "visibilitychange";
-    } else if (typeof document.msHidden !== "undefined") {
-      hidden = "msHidden";
-      visibilityChange = "msvisibilitychange";
-    } else if (typeof document.webkitHidden !== "undefined") {
-      hidden = "webkitHidden";
-      visibilityChange = "webkitvisibilitychange";
-    }
 
     if (typeof document.addEventListener != "undefined" || hidden != undefined) {
       document.addEventListener(visibilityChange, handleVisibilityChange, false);
