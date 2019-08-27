@@ -15,11 +15,15 @@
 
   <h2>21 Mr. Merch</h2>
 
-  <a id="venmo-pay" class="button js-button" role="button" href="https://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=ABCDE">venmo</a>
+  <a id="venmo-pay" class="button js-button" role="button">venmo</a>
 
   <p id="venmo-pay-status">Ready</p>
 
   <script>
+    let uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+    document.getElementById('venmo-pay').href = "venmo://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=" + uuid;
+
     var startTime = 0;
     document.getElementById('venmo-pay').addEventListener("click", function(e) {
         requestOrderId();
