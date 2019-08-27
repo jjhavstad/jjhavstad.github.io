@@ -65,7 +65,7 @@
        socket.onclose = function(event) {
          console.log('[close] Connection died');
          (async () => {
-             await setTimeout(tryToReopenSocket(socket), 3000);
+             await setTimeout(tryToReopenSocket(socket), 1000);
          })()
        };
 
