@@ -82,7 +82,7 @@
 
     function sendOrderId(orderId) {
         document.getElementById("venmo-pay-status").innerHTML = "Waiting...";
-        let data = {uuid: "ABCDE", type: SocketEvent.ORDER_ID, value: {orderId: orderId}}
+        let data = {uuid: uuid, type: SocketEvent.ORDER_ID, value: {orderId: orderId}}
         socket.send(JSON.stringify(data));
     }
 
