@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+  <script src="socket_event.js"></script>
+  <script src="order_status.js"></script>
+  <script src="visibility_change.js"></script>
+  <link rel="stylesheet" href="checkout.css">
+</head>
+
+<body>
+
+  <h2>21 Mr. Merch</h2>
+
+  <a id="venmo-pay" class="button js-button" role="button">venmo</a>
+
+  <p id="venmo-pay-status">Ready</p>
+
+  <script>
+    let uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+    document.getElementById('venmo-pay').href = "venmo://venmo.com/v2/paypal/checkout?lsat=12345\&uuid=" + uuid;
+
+    var startTime = 0;
+    document.getElementById('venmo-pay').addEventListener("click", function(e) {
+        requestOrderId();
+        startTime = Date.now();
+    });
+
+    function requestOrderId() {
+        const token = "PAYID-LVAMXNI15H26688T68737947";
+        initSocket(function(event) {
+            console.log(`Sending: ${token}`);
+            sendOrderId(token);
+            (async () => {
+                await setTimeout(sendHeartbeat, 1000);
+            })()
+        });
+    }
+
+    function sendHeartbeat() {
+        let now = Date.now();
+        let delta = now - startTime;
+        console.log(`Sending heartbeat at time: +${delta}`);
+        socket.send(now);
+        (async () => {
+            await setTimeout(sendHeartbeat, 1000);
+        })()
+    }
+
+    var socket;
+    function initSocket(onopen) {
+       socket = new WebSocket("ws://localhost:8001");
+
+       socket.onopen = onopen;
+
+       socket.onmessage = function(event) {
+         console.log(`Received: ${event.data}`);
+         parseInput(event.data);
+       };
+
+       socket.onclose = function(event) {
+         console.log('[close] Connection died');
+         (async () => {
+             await setTimeout(tryToReopenSocket(socket), 1000);
+         })()
+       };
+
+       socket.onerror = function(error) {
+         console.log(`[error] ${error.message}`);
+       };
+
+       return socket;
+    }
+
+    function tryToReopenSocket(socket) {
+       socket = initSocket(socket.onopen);
+    }
+
+    function sendOrderId(orderId) {
+        document.getElementById("venmo-pay-status").innerHTML = "Waiting...";
+        let data = {uuid: uuid, type: SocketEvent.ORDER_ID, value: {orderId: orderId}}
+        socket.send(JSON.stringify(data));
+    }
+
+    function parseInput(input) {
+        let result = JSON.parse(input);
+        if (result.type == SocketEvent.ORDER_COMPLETE) {
+          let value = result.value;
+          document.getElementById("venmo-pay-status").innerHTML = "Finished with order: " + value.orderId;
+        }
+    }
+
+    if (typeof document.addEventListener != "undefined" || hidden != undefined) {
+      document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    }
+
+    function handleVisibilityChange() {
+      if (document[hidden]) {
+        document.getElementById('page-visibility').innerHTML = 'Document is hidden';
+      } else {
+        document.getElementById('page-visibility').innerHTML = 'Document is visible';
+        if (orderState != OrderState.COMPLETED) {
+          document.getElementById('venmo-pay-status').innHTML = "Reopening web sockets to retrieve order status.";
+          recvSocket = createRecvSocket();
+          sendSocket = createSendSocket();
+        }
+      }
+    };
+  </script>
+</body>
